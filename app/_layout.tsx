@@ -1,0 +1,74 @@
+import { useEffect } from 'react'
+import { Stack } from 'expo-router'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter'
+import * as SplashScreen from 'expo-splash-screen'
+import { useAuthStore } from '@store/auth.store'
+import { useSyncStore } from '@store/sync.store'
+import { useNetworkStatus } from '@hooks/useNetworkStatus'
+
+SplashScreen.preventAutoHideAsync()
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,       // 30s — dados frescos por 30s
+      gcTime: 5 * 60_000,      // 5min — cache retido por 5 min
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
+
+export default function RootLayout() {
+  const { initialize, isInitialized } = useAuthStore()
+  const { processQueue } = useSyncStore()
+  const isOnline = useNetworkStatus()
+
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  })
+
+  useEffect(() => {
+    initialize()
+  }, [initialize])
+
+  useEffect(() => {
+    if (isInitialized && fontsLoaded) {
+      SplashScreen.hideAsync()
+    }
+  }, [isInitialized, fontsLoaded])
+
+  // Processar fila offline ao voltar online
+  useEffect(() => {
+    if (isOnline) {
+      processQueue()
+    }
+  }, [isOnline, processQueue])
+
+  if (!isInitialized || !fontsLoaded) return null
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <BottomSheetModalProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(app)" />
+          </Stack>
+        </BottomSheetModalProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
+  )
+}
