@@ -5,7 +5,7 @@ export default function AuthLayout() {
   const { session } = useAuthStore()
 
   // Se já autenticado, redireciona para o app
-  if (session) return <Redirect href="/(app)/dashboard" />
+  if (session) return <Redirect href="/(app)/(tabs)/dashboard" />
 
   return <Stack screenOptions={{ headerShown: false }} />
 }

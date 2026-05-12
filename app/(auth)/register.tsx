@@ -17,7 +17,7 @@ export default function RegisterScreen() {
   const onSubmit = async (data: SignUpInput) => {
     try {
       await signUp(data.email, data.password, data.fullName)
-      router.replace('/(app)/dashboard')
+      router.replace('/(app)/(tabs)/dashboard')
     } catch (err: unknown) {
       let message = 'Erro ao criar conta'
       if (err instanceof Error) {

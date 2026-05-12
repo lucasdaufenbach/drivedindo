@@ -1,67 +1,36 @@
 # DriveDindo
 
-Divisão inteligente de custos de veículo compartilhado.
+App de divisão de custos de veículo compartilhado.
 
-## Stack
+## Requisitos
 
-- **Mobile:** React Native + Expo + TypeScript
-- **Backend:** Supabase (Auth, PostgreSQL, Realtime, Storage)
-- **Estado:** Zustand
-- **Cache de servidor:** TanStack Query (React Query)
-- **Forms:** React Hook Form + Zod
-- **Navegação:** Expo Router
+- Node.js 18+
+- Expo Go instalado no celular
 
-## Setup
-
-### 1. Instalar dependências
+## Instalar dependências
 
 ```bash
 npm install
 ```
 
-### 2. Configurar variáveis de ambiente
+## Rodar
 
 ```bash
-cp .env.example .env
-# Preencher EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY
+npx expo start
 ```
 
-### 3. Configurar Supabase
+Escaneie o QR code com o Expo Go.
 
-1. Criar projeto em [supabase.com](https://supabase.com)
-2. Executar a migration em `supabase/migrations/001_initial_schema.sql`
-3. Copiar URL e anon key para o `.env`
-
-### 4. Gerar types do banco
+## Limpar cache
 
 ```bash
-npm run supabase:types
+npx expo start --clear
 ```
 
-### 5. Rodar o app
+## Resetar tudo (node_modules + cache)
 
-```bash
-npm start
+```powershell
+Remove-Item -Recurse -Force node_modules, .expo
+npm install
+npx expo start --clear
 ```
-
-## Estrutura
-
-```
-src/
-├── components/     # UI primitives e componentes compartilhados
-├── features/       # Módulos por domínio (trips, expenses, balance...)
-├── services/       # Camada de acesso ao Supabase (apenas I/O)
-├── store/          # Zustand stores (auth, vehicle, sync offline)
-├── hooks/          # Hooks transversais
-├── lib/            # Cálculos financeiros, formatters, validators
-├── types/          # TypeScript types
-└── theme/          # Design system (cores, tipografia, espaçamento)
-```
-
-## Regras de Negócio Principais
-
-- Divisão **proporcional ao uso real** (km rodados), não igualitária
-- Saldos calculados **dinamicamente** — nunca armazenados
-- Algoritmo de minimização de transferências (Splitwise-like)
-- Detecção automática de km gaps (km sem responsável)
-- Offline-first com fila de sincronização via Zustand persist

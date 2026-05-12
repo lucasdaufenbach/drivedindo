@@ -19,7 +19,7 @@ export default function LoginScreen() {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       await signIn(data.email, data.password)
-      router.replace('/(app)/dashboard')
+      router.replace('/(app)/(tabs)/dashboard')
     } catch (err: unknown) {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
       // Tratamento de erro de autenticação

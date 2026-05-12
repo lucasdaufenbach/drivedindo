@@ -36,8 +36,12 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           set({ session })
 
           if (session?.user) {
-            const profile = await authService.getProfile(session.user.id)
-            set({ profile })
+            try {
+              const profile = await authService.getProfile(session.user.id)
+              set({ profile })
+            } catch {
+              // perfil pode não existir ainda
+            }
           }
 
           // Listener para mudanças de sessão
