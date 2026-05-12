@@ -32,7 +32,8 @@
         {
           "photosPermission": "Permite selecionar foto do comprovante de despesa."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

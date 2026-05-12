@@ -7,11 +7,5 @@ export default function AuthLayout() {
   // Se já autenticado, redireciona para o app
   if (session) return <Redirect href="/(app)/dashboard" />
 
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="login" />
-      <Stack.Screen name="register" />
-      <Stack.Screen name="forgot-password" />
-    </Stack>
-  )
+  return <Stack screenOptions={{ headerShown: false }} />
 }

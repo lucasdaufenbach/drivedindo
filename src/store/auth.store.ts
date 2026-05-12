@@ -56,8 +56,12 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           const { session, user } = await authService.signIn(email, password)
           set({ session })
           if (user) {
-            const profile = await authService.getProfile(user.id)
-            set({ profile })
+            try {
+              const profile = await authService.getProfile(user.id)
+              set({ profile })
+            } catch {
+              // perfil ainda não criado, não bloqueia o login
+            }
           }
         } finally {
           set({ isLoading: false })
@@ -67,7 +71,19 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       signUp: async (email, password, fullName) => {
         set({ isLoading: true })
         try {
-          await authService.signUp(email, password, fullName)
+          const { session, user } = await authService.signUp(email, password, fullName)
+          set({ session })
+          if (user) {
+            try {
+              const profile = await authService.getProfile(user.id)
+              set({ profile })
+            } catch {
+              // profile pode ainda não existir logo após signup
+            }
+          }
+        } catch (error) {
+          set({ isLoading: false })
+          throw error
         } finally {
           set({ isLoading: false })
         }
